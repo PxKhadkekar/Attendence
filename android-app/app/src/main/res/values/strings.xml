@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">T&amp;P Attendance</string>
+    <string name="login_title">Student Biometric Portal</string>
+    <string name="login_subtitle">Training &amp; Placement Department</string>
+    <string name="prompt_email_roll">College Email or Roll Number</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_login">Sign In</string>
+    <string name="device_reg_title">Device Hardware Key Enrollment</string>
+    <string name="device_reg_desc">Your hardware-backed cryptographic keypair secures your attendance. Enrollment requires one-time biometric verification and T&amp;P officer approval.</string>
+    <string name="action_generate_key">Generate &amp; Enroll Device Key</string>
+    <string name="status_pending">Enrollment Status: PENDING OFFICER APPROVAL</string>
+    <string name="status_approved">Enrollment Status: APPROVED</string>
+    <string name="attendance_title">Placement Drive Attendance</string>
+    <string name="nearby_station">Nearby Station:</string>
+    <string name="scanning_beacons">Scanning for room station beacons...</string>
+    <string name="action_mark_attendance">Mark Biometric Attendance</string>
+    <string name="biometric_prompt_title">Authenticate Attendance</string>
+    <string name="biometric_prompt_subtitle">Confirm identity via fingerprint / face sensor</string>
+    <string name="biometric_prompt_negative">Cancel</string>
+</resources>

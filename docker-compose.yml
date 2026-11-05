@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: tp-attendance-mysql
+    restart: unless-stopped
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max_connections=300
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-placement_attendance}
+      MYSQL_USER: ${DB_USER:-tp_admin}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-SecurePassword_ChangeMeInProd!}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-RootPassword_ChangeMeInProd!}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    networks:
+      - tp_network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tp-attendance-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-placement_attendance}
+      DB_USER: ${DB_USER:-tp_admin}
+      DB_PASSWORD: ${DB_PASSWORD:-SecurePassword_ChangeMeInProd!}
+      JWT_SECRET: ${JWT_SECRET:-4c87a552e6fbbd182069279a08e1a120013b564e9a31828753d085942f741584}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+      JWT_REFRESH_EXPIRATION_MS: ${JWT_REFRESH_EXPIRATION_MS:-604800000}
+      INSTITUTION_EMAIL_DOMAIN: ${INSTITUTION_EMAIL_DOMAIN:-@college.edu}
+      EXCEL_MAX_FILE_SIZE_BYTES: ${EXCEL_MAX_FILE_SIZE_BYTES:-5242880}
+      EXCEL_MAX_ROWS: ${EXCEL_MAX_ROWS:-5000}
+      SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - tp_network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tp-attendance-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${PORT:-80}:80"
+    networks:
+      - tp_network
+
+networks:
+  tp_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

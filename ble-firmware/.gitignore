@@ -1,0 +1,6 @@
+.pio/
+test_runner
+beacon_sim
+*.o
+*.bin
+*.elf

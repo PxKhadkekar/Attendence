@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:placement_test;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+app:
+  jwt:
+    secret: 4c87a552e6fbbd182069279a08e1a120013b564e9a31828753d085942f741584
+    expiration-ms: 3600000
+    refresh-expiration-ms: 86400000
+  institution:
+    email-domain: "@college.edu"
+  excel:
+    max-file-size: 5242880
+    max-rows: 5000
